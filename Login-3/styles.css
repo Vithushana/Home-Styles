@@ -1,0 +1,347 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    display: flex;
+    width: 900px;
+    height: 550px;
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+}
+
+.illustration-section {
+    flex: 1;
+    background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.illustration {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+/* Image-based illustration styles */
+.phone-img {
+    position: absolute;
+    top: 50px;
+    left: 80px;
+    width: 80px;
+    height: 140px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+    object-fit: cover;
+}
+
+.phone-img:hover {
+    transform: scale(1.05);
+}
+
+.person-img {
+    position: absolute;
+    top: 70px;
+    right: 40px;
+    width: 70px;
+    height: 110px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    object-fit: cover;
+}
+
+.person-img:hover {
+    transform: scale(1.05);
+}
+
+.plant-img {
+    position: absolute;
+    bottom: 30px;
+    left: 60px;
+    width: 50px;
+    height: 70px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    object-fit: cover;
+}
+
+.plant-img:hover {
+    transform: scale(1.05);
+}
+
+/* Alternative: Single large illustration */
+.main-illustration {
+    width: 300px;
+    height: 250px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.main-illustration:hover {
+    transform: scale(1.02);
+}
+
+.blue-shape-1 {
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(74, 144, 226, 0.1);
+    border-radius: 50%;
+}
+
+.blue-shape-2 {
+    position: absolute;
+    bottom: -30px;
+    right: -30px;
+    width: 150px;
+    height: 150px;
+    background: rgba(74, 144, 226, 0.08);
+    border-radius: 50%;
+}
+
+.form-section {
+    flex: 1;
+    padding: 60px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 300px;
+}
+
+h2 {
+    color: #333;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.login-form {
+    width: 100%;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 0;
+    border: none;
+    border-bottom: 2px solid #e0e0e0;
+    font-size: 16px;
+    color: #333;
+    background: transparent;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    border-bottom-color: #4a90e2;
+}
+
+.input-group input::placeholder {
+    color: #999;
+    font-size: 14px;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-bottom: 30px;
+}
+
+.forgot-password a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.sign-in-btn, .sign-up-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sign-in-btn {
+    background: #4a90e2;
+    color: white;
+}
+
+.sign-in-btn:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+}
+
+.sign-up-btn {
+    background: transparent;
+    color: #4a90e2;
+    border: 2px solid #4a90e2;
+}
+
+.sign-up-btn:hover {
+    background: #4a90e2;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.social-login {
+    display: flex;
+    justify-content: center;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.social-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.social-icon.facebook {
+    background: #3b5998;
+    color: white;
+}
+
+.social-icon.google {
+    background: #db4437;
+    color: white;
+}
+
+.social-icon.linkedin {
+    background: #0077b5;
+    color: white;
+}
+
+.social-icon:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.background-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.bg-shape-1 {
+    position: absolute;
+    top: -100px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.bg-shape-2 {
+    position: absolute;
+    bottom: -150px;
+    right: -150px;
+    width: 400px;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+        width: 90%;
+        height: auto;
+        max-width: 400px;
+    }
+    
+    .illustration-section {
+        height: 200px;
+    }
+    
+    .form-section {
+        padding: 40px 30px;
+    }
+    
+    .illustration {
+        transform: scale(0.7);
+    }
+}
+
+@media (max-width: 480px) {
+    .form-section {
+        padding: 30px 20px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .sign-in-btn, .sign-up-btn {
+        width: 100%;
+    }
+}
