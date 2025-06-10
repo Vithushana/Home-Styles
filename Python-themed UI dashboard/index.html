@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Code Analytics Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a202c 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .python-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #3776ab, #ffd43b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #3776ab, #ffd43b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(45, 55, 72, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #3776ab, transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(55, 118, 171, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3776ab;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #a0aec0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .code-editor {
+            background: rgba(15, 20, 25, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        .editor-title {
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .editor-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3776ab, #4a90e2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(55, 118, 171, 0.4);
+        }
+
+        .code-area {
+            background: #1a202c;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #e2e8f0;
+            resize: vertical;
+            min-height: 200px;
+            width: 100%;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .widget {
+            background: rgba(45, 55, 72, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .widget-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #e2e8f0;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .file-item:hover {
+            color: #3776ab;
+            transform: translateX(5px);
+        }
+
+        .file-icon {
+            width: 16px;
+            height: 16px;
+            background: #3776ab;
+            border-radius: 3px;
+        }
+
+        .terminal {
+            background: #000;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            min-height: 150px;
+            border: 1px solid #2d3748;
+        }
+
+        .terminal-line {
+            margin-bottom: 5px;
+            animation: typewriter 0.5s ease-in-out;
+        }
+
+        @keyframes typewriter {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .prompt {
+            color: #3776ab;
+        }
+
+        .success {
+            color: #48bb78;
+        }
+
+        .error {
+            color: #f56565;
+        }
+
+        .chart-container {
+            background: rgba(45, 55, 72, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .chart {
+            display: flex;
+            justify-content: space-around;
+            align-items: end;
+            height: 200px;
+            margin-top: 20px;
+        }
+
+        .bar {
+            width: 40px;
+            background: linear-gradient(to top, #3776ab, #4a90e2);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            animation: growUp 1s ease-out;
+        }
+
+        @keyframes growUp {
+            from { height: 0; }
+        }
+
+        .bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #e2e8f0;
+            font-size: 12px;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #3776ab;
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles" id="particles"></div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <div class="python-icon">Py</div>
+                <h1 class="title">Python Code Analytics</h1>
+            </div>
+            <div class="editor-buttons">
+                <button class="btn btn-primary" onclick="runCode()">▶ Run Code</button>
+                <button class="btn btn-primary" onclick="clearTerminal()">Clear</button>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="linesCount">1,247</div>
+                <div class="stat-label">Lines of Code</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="filesCount">23</div>
+                <div class="stat-label">Python Files</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="functionsCount">89</div>
+                <div class="stat-label">Functions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="classesCount">15</div>
+                <div class="stat-label">Classes</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="code-editor">
+                <div class="editor-header">
+                    <div class="editor-title">main.py</div>
+                </div>
+                <textarea class="code-area" id="codeEditor" placeholder="# Write your Python code here...">
+# Welcome to Python Analytics Dashboard
+import numpy as np
+import matplotlib.pyplot as plt
+
+def analyze_data(data):
+    """Analyze and visualize data"""
+    mean_val = np.mean(data)
+    std_val = np.std(data)
+    
+    print(f"Mean: {mean_val:.2f}")
+    print(f"Standard Deviation: {std_val:.2f}")
+    
+    return mean_val, std_val
+
+# Generate sample data
+data = np.random.normal(50, 15, 1000)
+mean, std = analyze_data(data)
+
+print("Analysis complete!")
+                </textarea>
+            </div>
+
+            <div class="sidebar">
+                <div class="widget">
+                    <div class="widget-title">Project Files</div>
+                    <div class="file-item">
+                        <div class="file-icon"></div>
+                        <span>main.py</span>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon"></div>
+                        <span>data_analysis.py</span>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon"></div>
+                        <span>visualization.py</span>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon"></div>
+                        <span>utils.py</span>
+                    </div>
+                    <div class="file-item">
+                        <div class="file-icon"></div>
+                        <span>config.py</span>
+                    </div>
+                </div>
+
+                <div class="widget">
+                    <div class="widget-title">Terminal Output</div>
+                    <div class="terminal" id="terminal">
+                        <div class="terminal-line"><span class="prompt">python@analytics:~$</span> python main.py</div>
+                        <div class="terminal-line">Loading modules...</div>
+                        <div class="terminal-line success">✓ numpy imported successfully</div>
+                        <div class="terminal-line success">✓ matplotlib imported successfully</div>
+                        <div class="terminal-line">Ready for execution.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="widget-title">Code Complexity Analysis</div>
+            <div class="chart">
+                <div class="bar" style="height: 120px;" data-value="120"></div>
+                <div class="bar" style="height: 85px;" data-value="85"></div>
+                <div class="bar" style="height: 95px;" data-value="95"></div>
+                <div class="bar" style="height: 140px;" data-value="140"></div>
+                <div class="bar" style="height: 75px;" data-value="75"></div>
+                <div class="bar" style="height: 110px;" data-value="110"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Simulate code execution
+        function runCode() {
+            const terminal = document.getElementById('terminal');
+            const code = document.getElementById('codeEditor').value;
+            
+            terminal.innerHTML = '';
+            
+            const lines = [
+                '<div class="terminal-line"><span class="prompt">python@analytics:~$</span> python main.py</div>',
+                '<div class="terminal-line">Executing code...</div>',
+                '<div class="terminal-line success">Mean: 49.87</div>',
+                '<div class="terminal-line success">Standard Deviation: 14.92</div>',
+                '<div class="terminal-line success">Analysis complete!</div>',
+                '<div class="terminal-line success">✓ Execution finished successfully</div>'
+            ];
+            
+            lines.forEach((line, index) => {
+                setTimeout(() => {
+                    terminal.innerHTML += line;
+                    terminal.scrollTop = terminal.scrollHeight;
+                }, index * 500);
+            });
+
+            // Update stats with animation
+            setTimeout(() => {
+                animateCounter('linesCount', 1247, 1289);
+                animateCounter('functionsCount', 89, 91);
+            }, 2000);
+        }
+
+        function clearTerminal() {
+            const terminal = document.getElementById('terminal');
+            terminal.innerHTML = '<div class="terminal-line"><span class="prompt">python@analytics:~$</span> Terminal cleared</div>';
+        }
+
+        function animateCounter(elementId, start, end) {
+            const element = document.getElementById(elementId);
+            const duration = 1000;
+            const increment = (end - start) / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                element.textContent = Math.floor(current).toLocaleString();
+                
+                if (current >= end) {
+                    element.textContent = end.toLocaleString();
+                    clearInterval(timer);
+                }
+            }, 16);
+        }
+
+        // Add hover effects to file items
+        document.querySelectorAll('.file-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const fileName = item.querySelector('span').textContent;
+                document.querySelector('.editor-title').textContent = fileName;
+                
+                // Simulate loading different file content
+                const codeEditor = document.getElementById('codeEditor');
+                const sampleCodes = {
+                    'data_analysis.py': '# Data Analysis Module\nimport pandas as pd\nimport numpy as np\n\ndef load_dataset(filepath):\n    """Load and clean dataset"""\n    df = pd.read_csv(filepath)\n    return df.dropna()\n\ndef statistical_summary(df):\n    """Generate statistical summary"""\n    return df.describe()',
+                    'visualization.py': '# Visualization Module\nimport matplotlib.pyplot as plt\nimport seaborn as sns\n\ndef create_histogram(data, title):\n    """Create histogram visualization"""\n    plt.figure(figsize=(10, 6))\n    plt.hist(data, bins=30, alpha=0.7)\n    plt.title(title)\n    plt.show()',
+                    'utils.py': '# Utility Functions\nimport os\nimport json\n\ndef save_results(data, filename):\n    """Save results to JSON file"""\n    with open(filename, "w") as f:\n        json.dump(data, f, indent=2)\n\ndef create_directory(path):\n    """Create directory if not exists"""\n    os.makedirs(path, exist_ok=True)'
+                };
+                
+                if (sampleCodes[fileName]) {
+                    codeEditor.value = sampleCodes[fileName];
+                }
+            });
+        });
+
+        // Initialize particles on load
+        createParticles();
+
+        // Add some interactive stats updates
+        setInterval(() => {
+            const stats = ['linesCount', 'filesCount', 'functionsCount', 'classesCount'];
+            const randomStat = stats[Math.floor(Math.random() * stats.length)];
+            const element = document.getElementById(randomStat);
+            const currentValue = parseInt(element.textContent.replace(',', ''));
+            const newValue = currentValue + Math.floor(Math.random() * 3) - 1;
+            
+            if (newValue > 0) {
+                element.textContent = newValue.toLocaleString();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
